@@ -1,25 +1,43 @@
-import React from 'react';
+import React, { Suspense, lazy } from "react";
 // import logo from './logo.svg';
-import { BrowserRouter, Routes, Route, } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css'
-import 'bootstrap/dist/js/bootstrap.bundle.js';
-import './App.css';
-import Home from './pages/Home';
-import About from './pages/About';
-import Header from './components/Header';
-import Layout from './pages/Layout';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+// import "bootstrap/dist/js/bootstrap.min.js";
+
+// IMPORT STYLES
+import "./App.css";
+
+// IMPORT COMPONENTS
+import Layout from "./pages/Layout";
+import Loader from "./components/Loader";
+
+// IMPORT PAGES
+const HOME = lazy(() => loading(import("./pages/Home")));
+const ABOUT = lazy(() => loading(import("./pages/About")));
+const CONTACT = lazy(() => loading(import("./pages/Contact")));
+
+// PAGE LOADER FUCTION
+function loading(promise) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 1500);
+  }).then(() => promise);
+}
 
 function App() {
   return (
-    <>
     <BrowserRouter>
-      <Routes>
-          <Route path='/' index element={<Layout />} />
-          <Route path='about' index element={<About/>} />
-      </Routes>
+      <Suspense fallback={<Loader />}>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<HOME />} />
+            <Route path="/about" index element={<ABOUT />} />
+            <Route path="/contact" index element={<CONTACT />} />
+          </Routes>
+        </Layout>
+      </Suspense>
     </BrowserRouter>
-    </>
   );
 }
 
